@@ -21,6 +21,7 @@ RUN apt-get update
 RUN apt-get install ffmpeg libsm6 libxext6  -y
 
 RUN pip3 install xformers==0.0.23.post1
+COPY preset_packages preset_packages
 RUN pip3 install --no-index file:///products/app/preset_packages/CLIP_d50d76daa670286dd6cacf3bcd80b5e4823fc8e1.zip
 
 COPY requirements_versions.txt requirements_versions.txt
