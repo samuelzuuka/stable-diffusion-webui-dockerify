@@ -1,0 +1,16 @@
+services:
+  stable-diffusion:
+    build: .
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["all"]
+              capabilities: [gpu]
+    ports:
+      - 17860:17860
+    volumes:
+      - .:/products/app/
+    restart: unless-stopped
+    entrypoint: ["python","-m","http.server"]
