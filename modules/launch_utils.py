@@ -16,6 +16,7 @@ from modules import cmd_args, errors
 from modules.paths_internal import script_path, extensions_dir
 from modules.timer import startup_timer
 from modules import logging_config
+from preset_packages.localpath import CLIP_PACKAGE_PATH,OPEN_CLIP_PACKAGE_PATH
 
 args, _ = cmd_args.parser.parse_known_args()
 logging_config.setup_logging(args.loglevel)
@@ -343,10 +344,9 @@ def prepare_environment():
     requirements_file_for_npu = os.environ.get('REQS_FILE_FOR_NPU', "requirements_npu.txt")
 
     xformers_package = os.environ.get('XFORMERS_PACKAGE', 'xformers==0.0.23.post1')
-    # clip_package = os.environ.get('CLIP_PACKAGE', "https://github.com/openai/CLIP/archive/d50d76daa670286dd6cacf3bcd80b5e4823fc8e1.zip")
-    clip_package = os.environ.get('CLIP_PACKAGE', "./preset_packages/CLIP_d50d76daa670286dd6cacf3bcd80b5e4823fc8e1.zip")
-    openclip_package = os.environ.get('OPENCLIP_PACKAGE', "https://github.com/mlfoundations/open_clip/archive/bb6e834e9c70d9c27d0dc3ecedeebeaeb1ffad6b.zip")
-
+    clip_package = os.environ.get('CLIP_PACKAGE', "file://"+CLIP_PACKAGE_PATH)
+    openclip_package = os.environ.get('CLIP_PACKAGE', "file://"+OPEN_CLIP_PACKAGE_PATH)
+    
     assets_repo = os.environ.get('ASSETS_REPO', "https://github.com/AUTOMATIC1111/stable-diffusion-webui-assets.git")
     stable_diffusion_repo = os.environ.get('STABLE_DIFFUSION_REPO', "https://github.com/Stability-AI/stablediffusion.git")
     stable_diffusion_xl_repo = os.environ.get('STABLE_DIFFUSION_XL_REPO', "https://github.com/Stability-AI/generative-models.git")
@@ -393,11 +393,17 @@ def prepare_environment():
     startup_timer.record("torch GPU test")
 
     if not is_installed("clip"):
-        run_pip(f"install --no-index file://{os.path.abspath(clip_package)}", "clip")
+        if clip_package.startswith('file:'):
+            run_pip(f"install --no-index {clip_package}", "clip")
+        else:
+            run_pip(f"install {clip_package}", "clip")
         startup_timer.record("install clip")
 
     if not is_installed("open_clip"):
-        run_pip(f"install {openclip_package}", "open_clip")
+        if openclip_package.startswith('file:'):
+            run_pip(f"install --no-index {openclip_package}", "open_clip")
+        else:
+            run_pip(f"install {openclip_package}", "open_clip")
         startup_timer.record("install open_clip")
 
     if (not is_installed("xformers") or args.reinstall_xformers) and args.xformers:

@@ -12,5 +12,6 @@ services:
       - 17860:17860
     volumes:
       - .:/products/app/
+      - ~/.cache/huggingface/hub/models--openai--clip-vit-large-patch14:/root/.cache/huggingface/hub/models--openai--clip-vit-large-patch14
     restart: unless-stopped
     entrypoint: ["python","-m","http.server"]
