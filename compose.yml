@@ -9,7 +9,7 @@ services:
               device_ids: ["all"]
               capabilities: [gpu]
     ports:
-      - 17861:17861
+      - 7860:7860
     volumes:
       - .:/products/app/
       - /home/samuel/.cache/huggingface/hub/models--openai--clip-vit-large-patch14/:/root/.cache/huggingface/hub/models--openai--clip-vit-large-patch14/
