@@ -9,9 +9,9 @@ services:
               device_ids: ["all"]
               capabilities: [gpu]
     ports:
-      - 17860:17860
+      - 17861:17861
     volumes:
       - .:/products/app/
-      - ~/.cache/huggingface/hub/models--openai--clip-vit-large-patch14/:/root/.cache/huggingface/hub/models--openai--clip-vit-large-patch14/
+      - /home/samuel/.cache/huggingface/hub/models--openai--clip-vit-large-patch14/:/root/.cache/huggingface/hub/models--openai--clip-vit-large-patch14/
     restart: unless-stopped
-    entrypoint: ["python","-m","http.server"]
+      # entrypoint: ["python","-m","http.server"]

@@ -1,1 +1,1 @@
-python launch.py --xformers --api --no-half --disable-nan-check --port 17860
+python launch.py --xformers --api --log-startup --api-log --no-half --disable-nan-check --listen --port 17861

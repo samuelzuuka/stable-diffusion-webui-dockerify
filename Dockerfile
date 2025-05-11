@@ -27,4 +27,4 @@ RUN pip3 install --no-index file:///products/app/preset_packages/CLIP_d50d76daa6
 COPY requirements_versions.txt requirements_versions.txt
 RUN pip3 install -r requirements_versions.txt
 
-CMD ["python","launch.py","--xformers","--api","--no-half","--disable-nan-check","--port","17860"]
+CMD ["sh","start_sd-webui-sdxl.sh"]
