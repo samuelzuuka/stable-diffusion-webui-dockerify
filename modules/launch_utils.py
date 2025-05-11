@@ -139,9 +139,10 @@ def repo_dir(name):
 def run_pip(command, desc=None, live=default_command_live):
     if args.skip_install:
         return
-
+    if command.startswith("file:///"):
+        return run(f'"{python}" -m pip {command} --prefer-binary{index_url_line}', desc=f"Installing {desc} at {command}", errdesc=f"Couldn't install {desc}", live=live)
     index_url_line = f' --index-url {index_url}' if index_url != '' else ''
-    return run(f'"{python}" -m pip {command} --prefer-binary{index_url_line}', desc=f"Installing {desc}", errdesc=f"Couldn't install {desc}", live=live)
+    return run(f'"{python}" -m pip {command} --prefer-binary{index_url_line}', desc=f"Installing {desc} at {command}", errdesc=f"Couldn't install {desc}", live=live)
 
 
 def check_run_python(code: str) -> bool:
@@ -342,7 +343,8 @@ def prepare_environment():
     requirements_file_for_npu = os.environ.get('REQS_FILE_FOR_NPU', "requirements_npu.txt")
 
     xformers_package = os.environ.get('XFORMERS_PACKAGE', 'xformers==0.0.23.post1')
-    clip_package = os.environ.get('CLIP_PACKAGE', "https://github.com/openai/CLIP/archive/d50d76daa670286dd6cacf3bcd80b5e4823fc8e1.zip")
+    # clip_package = os.environ.get('CLIP_PACKAGE', "https://github.com/openai/CLIP/archive/d50d76daa670286dd6cacf3bcd80b5e4823fc8e1.zip")
+    clip_package = os.environ.get('CLIP_PACKAGE', "./preset_packages/CLIP_d50d76daa670286dd6cacf3bcd80b5e4823fc8e1.zip")
     openclip_package = os.environ.get('OPENCLIP_PACKAGE', "https://github.com/mlfoundations/open_clip/archive/bb6e834e9c70d9c27d0dc3ecedeebeaeb1ffad6b.zip")
 
     assets_repo = os.environ.get('ASSETS_REPO', "https://github.com/AUTOMATIC1111/stable-diffusion-webui-assets.git")
@@ -391,7 +393,7 @@ def prepare_environment():
     startup_timer.record("torch GPU test")
 
     if not is_installed("clip"):
-        run_pip(f"install {clip_package}", "clip")
+        run_pip(f"install --no-index file://{os.path.abspath(clip_package)}", "clip")
         startup_timer.record("install clip")
 
     if not is_installed("open_clip"):
